@@ -1,7 +1,7 @@
 package support
 
 import (
-	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func Split(delim byte, content []byte) [][]byte {
@@ -75,28 +76,18 @@ func fetchInput(day int, file string) {
 
 	defer out.Close()
 
-	io.Copy(out, resp.Body)
+	_, err = io.Copy(out, resp.Body)
+	Check(err)
 }
 
 func readLines(r io.ReadCloser) [][]byte {
+	buf := bytes.NewBuffer(nil)
+
+	_, err := io.Copy(buf, r)
+	Check(err)
 	defer r.Close()
 
-	scanner := bufio.NewScanner(r)
-	scanner.Split(bufio.ScanLines)
-
-	result := make([][]byte, 0)
-
-	for scanner.Scan() {
-		text := scanner.Text()
-
-		if text == "" {
-			break
-		}
-
-		result = append(result, []byte(text))
-	}
-
-	return result
+	return bytes.Split(buf.Bytes(), []byte("\n"))
 }
 
 func GetInputFor(day int) [][]byte {
@@ -125,9 +116,24 @@ func GetInputFor(day int) [][]byte {
 		return GetInputFor(day)
 	}
 
-	log.Println("read cached input file for day:", day)
+	log.Printf("read cached input file for day: %v - %s\n", day, filePath)
 
 	return readLines(f)
+}
+
+func IsInt(input string) bool {
+	if len(input) == 0 {
+		return false
+	}
+
+	_, err := strconv.Atoi(input)
+	return err == nil
+}
+
+func ToInt(input string) int {
+	val, err := strconv.Atoi(input)
+	Check(err)
+	return val
 }
 
 func Check(err error) {
