@@ -13,28 +13,22 @@ type Signal interface {
 	CompareTo(signal Signal) int
 }
 
-type ValueSignal struct {
-	value int
-}
+type ValueSignal int
 
 func (p *Packet) Len() int {
 	return len(p.signals)
 }
 
 func (v *ValueSignal) String() string {
-	return fmt.Sprintf("%v", v.value)
+	return fmt.Sprintf("%v", int(*v))
 }
 
 func (v *ValueSignal) CompareTo(other Signal) int {
-	if other == nil {
-		return -1
-	}
-
 	switch other := other.(type) {
 	case *ValueSignal:
-		if v.value == other.value {
+		if *v == *other {
 			return 0
-		} else if v.value < other.value {
+		} else if *v < *other {
 			return 1
 		} else {
 			return -1
@@ -51,7 +45,7 @@ func (v *ValueSignal) CompareTo(other Signal) int {
 
 func ValueSignalToPacket(v *ValueSignal) *Packet {
 	p := NewPacket(nil)
-	p.AddValueSignal(v.value)
+	p.AddValueSignal(int(*v))
 
 	return p
 }
@@ -89,17 +83,17 @@ type Packet struct {
 	parent  *Packet
 }
 
-type Packetlist []*Packet
+type PacketList []*Packet
 
-func (p Packetlist) Len() int {
+func (p PacketList) Len() int {
 	return len(p)
 }
 
-func (p Packetlist) Less(i, j int) bool {
+func (p PacketList) Less(i, j int) bool {
 	return p[i].CompareTo(p[j]) == 1
 }
 
-func (p Packetlist) Swap(i, j int) {
+func (p PacketList) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
@@ -134,11 +128,12 @@ func (p *Packet) AddPacketSignal() *Packet {
 	return child
 }
 
-func (p *Packet) AddValueSignal(signal int) {
-	p.signals = append(p.signals, &ValueSignal{signal})
+func (p *Packet) AddValueSignal(value int) {
+	s := ValueSignal(value)
+	p.signals = append(p.signals, &s)
 }
 
-func (p Packetlist) String() string {
+func (p PacketList) String() string {
 	var s strings.Builder
 
 	for i, v := range p {
@@ -154,7 +149,7 @@ func (p Packetlist) String() string {
 func main() {
 	key1, key2 := "[[2]]", "[[6]]"
 
-	var packetList = Packetlist{
+	var packetList = PacketList{
 		MakePacketStructure([]byte(key1)),
 		MakePacketStructure([]byte(key2)),
 	}
@@ -176,7 +171,7 @@ func main() {
 			decoderkey *= i + 1
 		}
 	}
-	fmt.Println("decoderkey:", decoderkey)
+	fmt.Println("decoder key:", decoderkey)
 }
 
 func MakePacketStructure(line []byte) *Packet {

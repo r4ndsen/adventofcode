@@ -12,29 +12,23 @@ type Signal interface {
 	CompareTo(signal Signal) int
 }
 
-type ValueSignal struct {
-	value int
-}
+type ValueSignal int
 
 func (p *Packet) Len() int {
 	return len(p.signals)
 }
 
 func (v *ValueSignal) String() string {
-	return fmt.Sprintf("%v", v.value)
+	return fmt.Sprintf("%v", int(*v))
 }
 
 func (v *ValueSignal) CompareTo(other Signal) int {
-	if other == nil {
-		return -1
-	}
-
 	switch other := other.(type) {
 	case *ValueSignal:
 		fmt.Printf("Compare %v vs %v\n", v, other)
-		if v.value == other.value {
+		if *v == *other {
 			return 0
-		} else if v.value < other.value {
+		} else if *v < *other {
 			fmt.Println("Left side is smaller, so inputs are in the right order")
 			return 1
 		} else {
@@ -53,7 +47,7 @@ func (v *ValueSignal) CompareTo(other Signal) int {
 
 func ValueSignalToPacket(v *ValueSignal) *Packet {
 	p := NewPacket(nil)
-	p.AddValueSignal(v.value)
+	p.AddValueSignal(int(*v))
 
 	return p
 }
@@ -125,12 +119,12 @@ func (p *Packet) AddPacketSignal() *Packet {
 	return child
 }
 
-func (p *Packet) AddValueSignal(signal int) {
-	p.signals = append(p.signals, &ValueSignal{signal})
+func (p *Packet) AddValueSignal(value int) {
+	signal := ValueSignal(value)
+	p.signals = append(p.signals, &signal)
 }
 
 func main() {
-
 	var right, left *Packet
 
 	for _, line := range support.GetInputFor(13) {
