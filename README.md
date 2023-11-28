@@ -1,5 +1,5 @@
-# adventofcode
+# advent of code
 
-https://adventofcode.com/2022
+https://adventofcode.com/2023
 
-doing the advent of code game in golang
+solving the advent of code puzzles in golang

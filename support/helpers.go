@@ -42,6 +42,10 @@ func Trim(chr byte, content []byte) []byte {
 }
 
 func readCookie() string {
+	if cookie := os.Getenv("COOKIE"); cookie != "" {
+		return cookie
+	}
+
 	envs, err := godotenv.Read("../.env")
 
 	if err != nil {
@@ -59,7 +63,7 @@ func readCookie() string {
 func fetchInput(day int, file string) {
 	log.Println("download input file for day:", day)
 
-	url := fmt.Sprintf("https://adventofcode.com/2022/day/%d/input", day)
+	url := fmt.Sprintf("https://adventofcode.com/2023/day/%d/input", day)
 
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	req.Header.Add("Cookie", readCookie())
@@ -72,26 +76,35 @@ func fetchInput(day int, file string) {
 	}
 
 	out, err := os.Create(file)
-	Check(err)
+	AssertNoError(err)
 
 	defer out.Close()
 
 	_, err = io.Copy(out, resp.Body)
-	Check(err)
+	AssertNoError(err)
 }
 
 func readLines(r io.ReadCloser) [][]byte {
 	buf := bytes.NewBuffer(nil)
 
 	_, err := io.Copy(buf, r)
-	Check(err)
+	AssertNoError(err)
 	defer r.Close()
 
 	return bytes.Split(buf.Bytes(), []byte("\n"))
 }
 
+func GetInput() [][]byte {
+	if day := os.Getenv("DAY"); day != "" {
+		return GetInputFor(ToInt(day))
+	}
+
+	log.Fatal("no day specified")
+	return nil
+}
+
 func GetInputFor(day int) [][]byte {
-	dir := fmt.Sprintf("/tmp/adventofcode/%d/", day)
+	dir := fmt.Sprintf("/tmp/adventofcode/2023/%d/", day)
 	filePath := dir + "input.txt"
 	var err error
 	f, err := os.Open(filePath)
@@ -132,11 +145,11 @@ func IsInt(input string) bool {
 
 func ToInt(input string) int {
 	val, err := strconv.Atoi(input)
-	Check(err)
+	AssertNoError(err)
 	return val
 }
 
-func Check(err error) {
+func AssertNoError(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}

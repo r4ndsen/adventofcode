@@ -1,9 +1,9 @@
 package main
 
 type Clock struct {
-	cycle  int
-	X      int
-	m      map[int]int
+	cycle int
+	X     int
+	m     map[int]int
 }
 
 func (c *Clock) tick() {

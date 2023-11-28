@@ -13,7 +13,7 @@ func main() {
 	for _, v := range support.GetInputFor(10) {
 		if string(v[:4]) == "addx" {
 			val, err := strconv.Atoi(string(v[5:]))
-			support.Check(err)
+			support.AssertNoError(err)
 
 			clock.add(val)
 		}
