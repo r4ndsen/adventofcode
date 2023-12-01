@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/r4ndsen/adventofcode/cast"
 	"github.com/r4ndsen/adventofcode/support"
 	"log"
 	"strings"
@@ -175,7 +176,7 @@ func MakePacketStructure(line []byte) *Packet {
 		}
 
 		if len(intBuf) != 0 {
-			currentPackage.AddValueSignal(support.ToInt(string(intBuf)))
+			currentPackage.AddValueSignal(cast.ToInt(string(intBuf)))
 			intBuf = nil
 		}
 
@@ -190,7 +191,7 @@ func MakePacketStructure(line []byte) *Packet {
 	}
 
 	if len(intBuf) != 0 {
-		currentPackage.AddValueSignal(support.ToInt(string(intBuf)))
+		currentPackage.AddValueSignal(cast.ToInt(string(intBuf)))
 	}
 
 	return root

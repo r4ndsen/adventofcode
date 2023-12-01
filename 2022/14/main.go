@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/r4ndsen/adventofcode/cast"
 	"github.com/r4ndsen/adventofcode/support"
 	"strings"
 )
@@ -21,7 +22,7 @@ func main() {
 
 		for _, pair := range strings.Split(string(line), " -> ") {
 			values := strings.Split(pair, ",")
-			path = append(path, Coordinate{support.ToInt(values[0]), support.ToInt(values[1])})
+			path = append(path, Coordinate{cast.ToInt(values[0]), cast.ToInt(values[1])})
 		}
 
 		g.addPath(path)

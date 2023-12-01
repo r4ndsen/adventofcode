@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/r4ndsen/adventofcode/cast"
 	"github.com/r4ndsen/adventofcode/support"
 	"regexp"
 )
@@ -20,12 +21,12 @@ func main() {
 
 		sensor := Sensor{
 			position: Coordinate{
-				support.ToInt(res[0][1]),
-				support.ToInt(res[0][2]),
+				cast.ToInt(res[0][1]),
+				cast.ToInt(res[0][2]),
 			},
 			beacon: Coordinate{
-				support.ToInt(res[0][3]),
-				support.ToInt(res[0][4]),
+				cast.ToInt(res[0][3]),
+				cast.ToInt(res[0][4]),
 			},
 		}
 

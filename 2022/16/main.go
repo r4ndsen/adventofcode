@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/r4ndsen/adventofcode/cast"
 	"github.com/r4ndsen/adventofcode/support"
 	"regexp"
 	"strings"
@@ -19,7 +20,7 @@ func main() {
 		res := re.FindAllStringSubmatch(string(line), -1)
 
 		v := valveCache.get(res[0][1])
-		v.flowRate = support.ToInt(res[0][2])
+		v.flowRate = cast.ToInt(res[0][2])
 
 		for _, l := range strings.Split(res[0][3], ", ") {
 			refValve := valveCache.get(l)

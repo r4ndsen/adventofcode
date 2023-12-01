@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
+	"github.com/r4ndsen/adventofcode/cast"
 	"io"
 	"log"
 	"net/http"
@@ -42,19 +42,9 @@ func Trim(chr byte, content []byte) []byte {
 }
 
 func readCookie() string {
-	if cookie := os.Getenv("COOKIE"); cookie != "" {
-		return cookie
-	}
-
-	envs, err := godotenv.Read("../.env")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cookie, ok := envs["COOKIE"]
-	if !ok {
-		log.Fatal("cookie not found in env")
+	cookie := os.Getenv("SESSION_COOKIE")
+	if cookie == "" {
+		log.Fatal("SESSON_COOKIE env not set")
 	}
 
 	return cookie
@@ -66,11 +56,13 @@ func fetchInput(day int, file string) {
 	url := fmt.Sprintf("https://adventofcode.com/2023/day/%d/input", day)
 
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
-	req.Header.Add("Cookie", readCookie())
+	sessionCookie := http.Cookie{
+		Name:  "session",
+		Value: readCookie(),
+	}
+	req.AddCookie(&sessionCookie)
 
-	c := http.Client{}
-
-	resp, err := c.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -91,12 +83,14 @@ func readLines(r io.ReadCloser) [][]byte {
 	AssertNoError(err)
 	defer r.Close()
 
-	return bytes.Split(buf.Bytes(), []byte("\n"))
+	res := bytes.Split(buf.Bytes(), []byte("\n"))
+
+	return res[:len(res)-1]
 }
 
 func GetInput() [][]byte {
 	if day := os.Getenv("DAY"); day != "" {
-		return GetInputFor(ToInt(day))
+		return GetInputFor(cast.ToInt(day))
 	}
 
 	log.Fatal("no day specified")
@@ -141,12 +135,6 @@ func IsInt(input string) bool {
 
 	_, err := strconv.Atoi(input)
 	return err == nil
-}
-
-func ToInt(input string) int {
-	val, err := strconv.Atoi(input)
-	AssertNoError(err)
-	return val
 }
 
 func AssertNoError(err error) {

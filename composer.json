@@ -1,0 +1,12 @@
+{
+    "name": "werner/adventofcode",
+    "description": "php solution for advent of code",
+    "autoload": {
+        "psr-4": {
+            "Werner\\Adventofcode\\": "src/"
+        }
+    },
+    "require": {
+        "symfony/dotenv": "^7.0"
+    }
+}
