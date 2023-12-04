@@ -7,6 +7,10 @@
         }
     },
     "require": {
-        "symfony/dotenv": "^7.0"
+        "symfony/dotenv": "^7.0",
+        "friendsofphp/php-cs-fixer": "^3"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
     }
 }
