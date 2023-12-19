@@ -76,19 +76,17 @@ func fetchInput(day int, file string) {
 	AssertNoError(err)
 }
 
-func readLines(r io.ReadCloser) [][]byte {
+func readLines(r io.ReadCloser) Input {
 	buf := bytes.NewBuffer(nil)
 
 	_, err := io.Copy(buf, r)
 	AssertNoError(err)
 	defer r.Close()
 
-	res := bytes.Split(buf.Bytes(), []byte("\n"))
-
-	return res[:len(res)-1]
+	return InputType(buf.Bytes())
 }
 
-func GetInput() [][]byte {
+func GetInput() Input {
 	if day := os.Getenv("DAY"); day != "" {
 		return GetInputFor(cast.ToInt(day))
 	}
@@ -97,7 +95,7 @@ func GetInput() [][]byte {
 	return nil
 }
 
-func GetInputFor(day int) [][]byte {
+func GetInputFor(day int) Input {
 	dir := fmt.Sprintf("/tmp/adventofcode/2023/%d/", day)
 	filePath := dir + "input.txt"
 	var err error

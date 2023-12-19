@@ -1,6 +1,10 @@
 {
     "name": "werner/adventofcode",
     "description": "php solution for advent of code",
+    "config": {
+
+        "vendor-dir": "composer-vendor"
+    },
     "autoload": {
         "psr-4": {
             "Werner\\Adventofcode\\": "src/"

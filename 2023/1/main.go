@@ -6,12 +6,12 @@ import (
 	"github.com/r4ndsen/adventofcode/cast"
 	"github.com/r4ndsen/adventofcode/support"
 	"golang.org/x/exp/maps"
-	"math"
 	"regexp"
 	"strings"
 )
 
 var numbers map[string]int
+var re *regexp.Regexp
 
 func init() {
 	numbers := make(map[string]int)
@@ -22,6 +22,8 @@ func init() {
 		numbers[fmt.Sprintf("%v", idx)] = idx
 		numbers[fmt.Sprintf("%v", v)] = idx
 	}
+
+	re = regexp.MustCompile(strings.Join(maps.Keys(numbers), "|"))
 }
 
 func main() {
@@ -40,71 +42,54 @@ func main() {
 
 		fmt.Println("Output:", ans)
 	} else {
-		ans := sample([][]byte{
-			[]byte("1abc2"),
-			[]byte("pqr3stu8vwx"),
-			[]byte("a1b2c3d4e5f"),
-			[]byte("treb7uchet"),
-		})
+		ans := sample(support.InputType("1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet"))
 		fmt.Println("Output:", ans)
 	}
 }
 
-func part1(input [][]byte) int {
+func part1(input support.Input) int {
 	ans := 0
-	for _, line := range input {
+	for _, line := range input.Lines() {
 		ans += parseLine(line)
 	}
 
 	return ans
 }
 
-func part2(input [][]byte) int {
-	reString := strings.Join(maps.Keys(numbers), "|")
-	re := regexp.MustCompile(reString)
-
+func part2(input support.Input) int {
 	var result int
-	for _, row := range input {
-		one, two := firstAndLastDigitWithSpelled(string(row), re)
+	for _, row := range input.Lines() {
+		one, two := firstAndLastDigitWithSpelled(row)
 		result += one*10 + two
 	}
 
 	return result
 }
 
-func firstAndLastDigitWithSpelled(row string, re *regexp.Regexp) (first int, last int) {
-	lastIdx := math.MinInt
+func firstAndLastDigitWithSpelled(row string) (first int, last int) {
+	m := re.FindAllString(row, -1)
 
-	first = numbers[re.FindString(row)]
-
-	for k, v := range numbers {
-		if found := strings.LastIndex(row, k); found != -1 && found > lastIdx {
-			lastIdx = found
-			last = v
-		}
-	}
-
-	return
+	return numbers[m[0]], numbers[m[len(m)-1]]
 }
 
-func sample(input [][]byte) int {
+func sample(input support.Input) int {
 	ans := 0
-	for _, line := range input {
+	for _, line := range input.Lines() {
 		ans += parseLine(line)
 	}
 
 	return ans
 }
 
-func parseLine(input []byte) int {
+func parseLine(input string) int {
 	first, last := firstAndLastDigit(input)
 
 	return first*10 + last
 }
 
-func firstAndLastDigit(input []byte) (first int, last int) {
+func firstAndLastDigit(input string) (first int, last int) {
 	re, _ := regexp.Compile("[^1-9]+")
-	res := re.ReplaceAll(input, []byte(""))
+	res := re.ReplaceAllString(input, "")
 
 	return cast.ToInt(res[0]), cast.ToInt(res[len(res)-1])
 }
