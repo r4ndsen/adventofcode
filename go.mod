@@ -1,5 +1,5 @@
 module github.com/r4ndsen/adventofcode
 
-go 1.21.4
+go 1.23
 
-require golang.org/x/exp v0.0.0-20231127185646-65229373498e
+require golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f

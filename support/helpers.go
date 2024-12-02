@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func Split(delim byte, content []byte) [][]byte {
@@ -53,7 +54,9 @@ func readCookie() string {
 func fetchInput(day int, file string) {
 	log.Println("download input file for day:", day)
 
-	url := fmt.Sprintf("https://adventofcode.com/2023/day/%d/input", day)
+	now := time.Now()
+
+	url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/input", now.Year(), day)
 
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	sessionCookie := http.Cookie{
