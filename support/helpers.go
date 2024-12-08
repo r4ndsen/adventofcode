@@ -99,7 +99,7 @@ func GetInput() Input {
 }
 
 func GetInputFor(day int) Input {
-	dir := fmt.Sprintf("/tmp/adventofcode/2023/%d/", day)
+	dir := fmt.Sprintf("/tmp/adventofcode/2024/%d/", day)
 	filePath := dir + "input.txt"
 	var err error
 	f, err := os.Open(filePath)

@@ -2,7 +2,6 @@
     "name": "werner/adventofcode",
     "description": "php solution for advent of code",
     "config": {
-
         "vendor-dir": "composer-vendor"
     },
     "autoload": {
@@ -11,7 +10,8 @@
         }
     },
     "require": {
-        "symfony/dotenv": "^7.0",
+		"php": "^8.4",
+        "symfony/dotenv": "^7",
         "friendsofphp/php-cs-fixer": "^3"
     },
     "require-dev": {

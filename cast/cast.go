@@ -3,6 +3,7 @@ package cast
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // ToInt will case a given arg into an int type.
@@ -17,10 +18,26 @@ func ToInt(arg interface{}) int {
 		if err != nil {
 			panic("error converting string to int " + err.Error())
 		}
+	case float64:
+		val = int(arg.(float64))
 	default:
 		panic(fmt.Sprintf("unhandled type for int casting %T", arg))
 	}
 	return val
+}
+
+func LineOfInts(line string) []int {
+	ints := make([]int, 0)
+	for _, n := range strings.Split(line, " ") {
+		n = strings.TrimSpace(n)
+		if n == "" {
+			continue
+		}
+
+		ints = append(ints, ToInt(n))
+	}
+
+	return ints
 }
 
 // ToString will case a given arg into an int type.
